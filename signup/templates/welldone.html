@@ -1,0 +1,12 @@
+{% extends "base_signup.html" %}
+
+{% block content %}
+	
+<p><strong>Thank you</strong> - we'll get back in touch.
+	
+	
+<p><a href="mailto:?subject={{email_subject|urlencode}}&body={{email_body|urlencode}}">Click here to open a new email and invite your friends, family and colleagues to get involved.</a></p>
+
+<p>Email me francis@seriouschange.org.uk if you have something to say.
+	
+{% endblock %}

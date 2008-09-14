@@ -1,0 +1,72 @@
+{% extends "base_signup.html" %}
+
+{% block content %}
+	
+	<p><strong>Sigh.</strong>
+
+<p>It's bloody obvious we need to do something <strong>pretty serious</strong>
+about climate change, but everyone campaigning on the issue seems so...
+<strong>hopeless</strong>.
+
+<p>On one side you've got a small cadre of <strong>over-exposed
+denialists</strong> who seem to think that the only way they can show they're
+truly pro-business is by doing what a good business leader would never do -
+ignoring the evidence and increasing their business risks.
+
+<p>And on the other you've got <strong>chippy crusties</strong> who rejoice at
+the idea everyone might have to live crapper, more poverty stricken lives, just
+to Bring Them All Down To Size.
+
+<p>What about those of us who are <strong>excited</strong> precisely because the fight
+against climate change can help us <strong>push</strong> our economy, our
+democracy and lifestyles truly <strong>into the 21st century</strong>? Those of
+us who want our lives to run on renewable power not just to save the planet,
+but because we'll get to be part of the true Greatest Generation and get
+loads of <strong>cool new stuff</strong> in the process.
+
+<!--<p style="text-align: right"><img src="close-quote.jpg">-->
+
+<div id="signup">
+
+<p>Sounds familiar? If that's how <strong>you feel</strong>, 
+put your details down here.  And together we'll sort it out.
+</p>
+
+
+<form action="." method="post">
+   <p> {% for field in form %}
+      {{ field.label_tag }} 
+      {{ field }} 
+        {% if field.errors %}
+        - <span class="error">{{ field.errors|join:", " }}</span>
+        {% endif %}
+      <br/>
+    {% endfor %}</p>
+ 	<input type="submit" class="submit" value="Sign up"/>
+</form>
+
+
+</div>
+
+<h2>FAQ</h2>
+
+<h3>Who the bejeeps are you and why should I give you my email address?</h3>
+
+<p>My name is Francis Irving, and you're giving your email to 
+Serious Change, a new unincorporated member association. I ran the successful <a
+href="http://www.saveparliament.org.uk/index.php">Save Parliament</a> campaign
+which stopped the UK Government getting slightly more fascist. 
+Now <strong>we</strong> are going to stop climate
+change. Except <strong>without</strong> the <strong>crusties and
+anti-scientists</strong>, our civilisation is too precious to leave this to
+them.
+
+<p>I'm going to use your email to ask for your help to run this thing, and you'll
+be able to unsubscribe at any time. The postcode is so we can later form local
+groups to really make things happen.
+
+<p>Just email me (francis@seriouschange.org.uk) if you want to know more.
+
+</div>
+
+{% endblock %}
