@@ -1,5 +1,16 @@
 {% extends "base_signup.html" %}
 
+{% block javascript %}
+<script>
+{% if error %}
+window.onload = function () { 
+   window.location = window.location + "#form";
+};
+{% endif %}
+
+</script>
+{% endblock %}
+
 {% block content %}
 	
 	<p><strong>Sigh.</strong>
@@ -28,7 +39,7 @@ loads of <strong>cool new stuff</strong> in the process.
 
 <div id="signup">
 
-<p>Sounds familiar? If that's how <strong>you feel</strong>, 
+<p><a name="form">Sounds familiar?</a> If that's how <strong>you feel</strong>, 
 put your details down here.  And together we'll sort it out.
 </p>
 

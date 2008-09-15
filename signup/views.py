@@ -123,9 +123,14 @@ def signup_page(request):
             return render_to_response('welldone.html', 
                 {'email_subject': EMAIL_SUBJECT, 
                 'email_body': EMAIL_BODY})
+        else:
+            # any errors is used to invoke a little bit of javascript 
+            # that moves the focus of the page to the form
+            any_errors = True
     else:
         signup_form = SignupDetailsForm()
-    
-    return render_to_response('signup.html', {'form': signup_form})
+        any_errors = False
+        
+    return render_to_response('signup.html', {'form': signup_form, 'error': any_errors})
 #
 ##############################################################################
