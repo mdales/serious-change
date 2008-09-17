@@ -83,9 +83,7 @@ class SignupDetailsForm(Form):
     def clean_postcode(self):
         """we use this method to check that the postcode is valid"""
         postcode = self.cleaned_data['postcode']
-        
-        print "-%s-" % postcode
-        
+                
         if not _validate_postcode(postcode):
             raise ValidationError('Please enter a valid postcode.')
         
@@ -115,7 +113,7 @@ http://www.seriouschange.org.uk/
 def signup_page(request):
     """This is the basic signup view - asks users for details and then
     forwards them to a 'well done' page."""
-    print request.POST
+    
     if request.method == 'POST':
         signup_form = SignupDetailsForm(request.POST)
         if signup_form.is_valid():
