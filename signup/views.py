@@ -16,7 +16,8 @@ import re
 
 # standard django imports
 from django.shortcuts import render_to_response
-from django.forms import ModelForm, ValidationError
+from django.forms import ModelForm, ValidationError, Form
+import django.forms as forms
 
 # serious change imports
 from seriouschange.signup.models import SignupDetails
@@ -70,11 +71,12 @@ def _validate_postcode(postcode):
 
 ##############################################################################
 #
-class SignupDetailsForm(ModelForm):
-    
-    class Meta:
-        model = SignupDetails
-        exclude = ('creation_time', 'creation_ipaddr')
+class SignupDetailsForm(Form):
+    email_address = forms.EmailField(error_messages = 
+        {'required': 'Please enter a valid email address.',
+        'invalid': 'Please enter a valid email address.'})
+    postcode = forms.CharField(max_length=9, 
+        error_messages = {'required': 'Please enter a valid postcode.'})
 
     ##########################################################################
     #
@@ -82,12 +84,15 @@ class SignupDetailsForm(ModelForm):
         """we use this method to check that the postcode is valid"""
         postcode = self.cleaned_data['postcode']
         
+        print "-%s-" % postcode
+        
         if not _validate_postcode(postcode):
-            raise ValidationError('Enter a valid postcode.')
+            raise ValidationError('Please enter a valid postcode.')
         
         return postcode
     #
     ##########################################################################
+    
 #
 ##############################################################################
 
@@ -110,13 +115,17 @@ http://www.seriouschange.org.uk/
 def signup_page(request):
     """This is the basic signup view - asks users for details and then
     forwards them to a 'well done' page."""
-    
+    print request.POST
     if request.method == 'POST':
         signup_form = SignupDetailsForm(request.POST)
         if signup_form.is_valid():
-            new_signup = signup_form.save(commit=False)
+            #new_signup = signup_form.save(commit=False)
+            new_signup = SignupDetails()
+            new_signup.email_address = signup_form.cleaned_data['email_address']
+            new_signup.postcode = signup_form.cleaned_data['postcode']
             new_signup.creation_time = datetime.datetime.now()
             new_signup.creation_ipaddr = request.META['REMOTE_ADDR']
+            new_signup.version_string = request.POST['version']
             new_signup.save()
             
             # return to the main org view after creation
@@ -127,6 +136,7 @@ def signup_page(request):
             # any errors is used to invoke a little bit of javascript 
             # that moves the focus of the page to the form
             any_errors = True
+                    
     else:
         signup_form = SignupDetailsForm()
         any_errors = False

@@ -4,7 +4,7 @@ from django.conf.urls.defaults import *
 from django.contrib import admin
 admin.autodiscover()
 
-urlpatterns = patterns('signup.views',
+urlpatterns = patterns('seriouschange.signup.views',
     # Example:
     (r'^$', 'signup_page'),
 

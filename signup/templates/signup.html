@@ -46,13 +46,14 @@ put your details down here.  And together we'll sort it out.
 
 <form action="." method="post">
    <p> {% for field in form %}
+        {% if field.errors %}
+        <span class="error">{{ field.errors|join:", " }}</span><br>
+        {% endif %}
       {{ field.label_tag }} 
       {{ field }} 
-        {% if field.errors %}
-        - <span class="error">{{ field.errors|join:", " }}</span>
-        {% endif %}
       <br/>
     {% endfor %}</p>
+	<input type="hidden" name="version" value="chippy"/>
  	<input type="submit" class="submit" value="Sign up"/>
 </form>
 
