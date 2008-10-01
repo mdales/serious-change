@@ -1,0 +1,144 @@
+body {
+  width:61em;
+  margin:0 auto 0 auto;
+  font-family:"Courier New", "Courier", monospace;
+  position:relative;
+}
+h1 {
+  width:40%;
+  font-size:8em;
+  font-weight:bold;
+  float:left;
+}
+
+
+#p1 {
+  margin:1.6em 0;
+  float:right;
+  width:60%;
+  font-size:2em;
+}
+
+#p2 {
+  margin:1.5em 0;
+  padding:0 18em 0 0;
+  font-size:1.2em;
+  background:url('images/p2-arrow.png') 80% bottom no-repeat;
+  clear:both;
+}
+
+#p3 {
+  text-align:right;
+  margin:1.5em 0 2.5em 0;
+  padding:0 0 0 22em;
+  font-size:1.2em;
+  background:url('images/p3-arrow.png') 20% center no-repeat;  
+}
+
+#p4outer {
+  background:url('images/highlight-l.png') left top no-repeat #92A3E8;
+  clear:both;
+}
+
+#p4inner {
+  background:url('images/highlight-r.png') right top no-repeat;
+  height:235px;
+}
+
+#p4outer p {
+  margin:0 auto;
+  padding:0.5em;
+  width:70%;
+  float:none;
+  font-size:1.3em;
+}
+
+#p4outer p em, #p5 em {
+  text-decoration:underline;
+  font-style:normal;
+  white-space:nowrap;
+}
+
+#p5outer {
+  margin:1em 0;
+/*  padding:1em 0 0 6em;*/
+  font-size:1.8em;
+  background:url('images/form-arrow.png') left 60% no-repeat;  
+  position:relative;
+}
+
+#p5inner {
+    background:url('images/form-arrow-r.png') right 60% no-repeat; 
+}
+
+#p5outer form {
+  clear:both;
+  width:70%;
+  margin:0 auto;
+
+}
+
+#p5outer form ol li {
+  margin:0.2em 0;
+}
+
+#p5outer form ol li label {
+  display:inline-block;
+  width:6em;
+}
+
+#p5outer form ol li input {
+  border:1px solid black;
+}
+
+#p5outer form input {
+  border:1px solid black;
+}
+
+
+#faq {
+  padding:3em 0 0 8em;
+  margin:3em 0 0 3em;
+  font-size:1.2em;
+  background:url('images/question.png') no-repeat left 20%;
+  overflow:auto;
+  clear:both;
+}
+
+#faq h2 {
+  font-size:2em;
+}
+
+#faq #p7 {
+  margin:1em 0;
+}
+
+#faq strong {
+  font-weight:bold;
+  text-decoration:none;
+  font-style:italic;
+}
+*/
+
+p {
+  float:left;
+}
+
+strong {
+  font-weight:bold;
+  text-decoration:underline;
+}
+
+em {
+  font-style:italic;
+}
+
+dfn {
+  font-weight:bold;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+
+span.error {
+    color: #f00;
+}
