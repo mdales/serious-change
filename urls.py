@@ -2,12 +2,13 @@ from django.conf.urls.defaults import *
 from seriouschange import settings
 
 # Uncomment the next two lines to enable the admin:
-#from django.contrib import admin
+from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('seriouschange.signup.views',
     # Example:
     (r'^$', 'signup_page'),
+    (r'^facebook/$', 'signup_facebook'),
 
     # Uncomment the next line to enable admin documentation:
     #(r'^admin/doc/', include('django.contrib.admindocs.urls')),

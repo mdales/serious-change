@@ -16,12 +16,14 @@ import re
 
 # standard django imports
 from django.shortcuts import render_to_response
+from django.http import HttpResponseRedirect
 from django.forms import ModelForm, ValidationError, Form
 import django.forms as forms
 
 # serious change imports
 from seriouschange.signup.models import SignupDetails
 
+#from facebook import Facebook
 
 ##############################################################################
 #
@@ -140,5 +142,37 @@ def signup_page(request):
         any_errors = False
         
     return render_to_response('signup.html', {'form': signup_form, 'error': any_errors})
+#
+##############################################################################
+
+
+##############################################################################
+#
+def signup_facebook(request):
+    
+    fb = Facebook('f3f793322d6eeed0ffd2aacb3a504e4e', 'a899d3e7e654e59438890f3e9891904d')
+    
+    if 'session_key' in request.session and 'uid' in request.session:
+        fb.session_key = request.session['session_key']
+        fb.uid = request.session['uid']
+    else:
+        
+        try:
+            fb.auth_token = request.GET['auth_token']
+        except KeyError:
+            # Send user to the Facebook to login
+            return HttpResponseRedirect(fb.get_login_url())
+
+        # getSession sets the session_key and uid
+        # Store these in the cookie so we don't have to get them again
+        fb.auth.getSession()
+        request.session['session_key'] = fb.session_key
+        request.session['uid'] = fb.uid
+
+    
+        
+    info = fb.users.getInfo([fb.uid], ['name', 'current_location', 'email_hashes'])[0]
+    
+    return render_to_response('facebook.html', {'info': info, 'fb': fb})
 #
 ##############################################################################

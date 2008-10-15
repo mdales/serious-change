@@ -142,3 +142,10 @@ dfn {
 span.error {
     color: #f00;
 }
+
+#faq li
+{
+    list-style-position: inside;
+    list-style-type: decimal;
+    margin-left: 10px;
+}
