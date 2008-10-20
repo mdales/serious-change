@@ -7,6 +7,8 @@ ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
 
+EMAIL_HOST = 'nothing.reaperman.org'
+
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
@@ -35,8 +37,8 @@ USE_I18N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '/Users/mdales/SeriousChange/website/seriouschange/site_media'
-ADMIN_MEDIA_ROOT = '/Users/mdales/SeriousChange/website/seriouschange/site_media'
+MEDIA_ROOT = '/Users/mdales/Projects/SeriousChange/website/seriouschange/site_media'
+ADMIN_MEDIA_ROOT = '/Users/mdales/Projects/SeriousChange/website/seriouschange/site_media'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -82,4 +84,5 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
     'seriouschange.signup',
+    'seriouschange.organise',
 )

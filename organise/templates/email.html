@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+	
+<h1>Email people</h1>
+
+<p>Please be very careful with this - what you're about to send will hit everyone!</p>
+
+{% if message %}
+	<h2>{{message}}</h2>
+{% endif %}
+
+<form method="POST">
+<table>
+	{% for field in form %}
+		<tr><td>{{field.label}}</td><td>{{field}} {{field.errors}}</td></tr>
+	{% endfor %}
+</table>
+<input type="submit" value="Send mail"/>
+</form>
+
+<p>Return to <a href="/organise/">serious change organise overview</a>...</p>
+
+{% endblock %}

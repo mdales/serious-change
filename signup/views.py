@@ -150,7 +150,8 @@ def signup_page(request):
 #
 def signup_facebook(request):
     
-    fb = Facebook('f3f793322d6eeed0ffd2aacb3a504e4e', 'a899d3e7e654e59438890f3e9891904d')
+    # old keys no longer valid, need to get from settings
+    #fb = Facebook(settings.FACEBOOK1, settings.FACEBOOK2)
     
     if 'session_key' in request.session and 'uid' in request.session:
         fb.session_key = request.session['session_key']

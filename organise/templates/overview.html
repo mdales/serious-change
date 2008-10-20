@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+	
+	
+<h1>SeriousChange overview</h1>
+
+{% if user.first_name %}
+	<p>Welcome {{user.first_name}}!</p>
+{% else %}
+	<p>Welcome {{user.username}}!</p>
+{% endif %}
+
+<div class="signups">
+	<h2>Stats</h2>
+	<ul>
+		<li>Total signups: {{ total.all }}
+		<li>New since you last logged in: {{ total.recent }}
+		<li>New today: {{ total.today}}
+	</ul>
+</div>
+
+<div class="tasks">
+	<h2>Tasks</h2>
+
+	<ul>
+		<li><a href="email/">Send email to signed up people</a></li>
+	</ul>
+</div>
+
+<p><a href="/accounts/logout/">Logout</a></p>
+
+{% endblock %}
