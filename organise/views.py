@@ -96,7 +96,7 @@ def email_compose(request):
                 mail_list = [(form.cleaned_data['subject'], form.cleaned_data['message'], 
                     form.cleaned_data['from_address'], [x.email_address,]) for x in signed_up_people]
                 
-                #send_mass_mail(mail_list, fail_silently=True)
+                send_mass_mail(mail_list, fail_silently=True)
                 
                 message = "This email has been sent to %d people - I hope you meant it :)" % len(mail_list)
         
