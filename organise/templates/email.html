@@ -5,6 +5,7 @@
 <h1>Email people</h1>
 
 <p>Please be very careful with this - what you're about to send will hit everyone!</p>
+<p>We only log an email when you send it to everyone.</p>
 
 {% if message %}
 	<h2>{{message}}</h2>
@@ -16,7 +17,7 @@
 		<tr><td>{{field.label}}</td><td>{{field}} {{field.errors}}</td></tr>
 	{% endfor %}
 </table>
-<input type="submit" value="Send mail"/>
+<input type="submit" value="Send mail"/> (this may take a while...)
 </form>
 
 <p>Return to <a href="/organise/">serious change organise overview</a>...</p>

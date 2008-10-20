@@ -20,8 +20,8 @@ from django.contrib.auth.models import User
 from django import forms
 from django.core.mail import send_mail, send_mass_mail, BadHeaderError
 
-
 from seriouschange.signup.models import SignupDetails
+from seriouschange.organise.models import MailEvent
 
 ##############################################################################
 #
@@ -50,14 +50,28 @@ def organise_overview(request):
 
 ##############################################################################
 #
-class EmailForm(forms.Form):
+def email_list(request):
+    
+    campaign_list = MailEvent.objects.all()
+    
+    return render_to_response("email_list.html",
+        {'campaign_list': campaign_list},
+        context_instance=RequestContext(request))
+#
+##############################################################################
+
+
+##############################################################################
+#
+class MailEventForm(forms.Form):
+    from_address = forms.EmailField(required=True)
     subject = forms.CharField(max_length=255, required=True)
     message = forms.CharField(required=True, widget=forms.Textarea)
     everyone = forms.BooleanField(required=False)
     
     
 @login_required
-def email_list(request):
+def email_compose(request):
     """docstring for organise_overview"""
     
     print request.POST
@@ -65,14 +79,14 @@ def email_list(request):
     message = None
     
     if request.method == "POST":
-        form = EmailForm(request.POST)
+        form = MailEventForm(request.POST)
         if form.is_valid():
             
             if (not request.POST.has_key('everyone')) or (request.POST['everyone'] != 'on'):
                 # test mail
                 send_mail(form.cleaned_data['subject'], 
                     form.cleaned_data['message'], 
-                    'hello@seriouschange.org.uk', 
+                    form.cleaned_data['from_address'],
                     [request.user.email,])
                 message = "Email has been sent to you - please check it!"
             else:
@@ -80,14 +94,24 @@ def email_list(request):
                 
                 signed_up_people = SignupDetails.objects.all()
                 mail_list = [(form.cleaned_data['subject'], form.cleaned_data['message'], 
-                    'hello@seriouschange.org.uk', [x.email_address,]) for x in signed_up_people]
+                    form.cleaned_data['from_address'], [x.email_address,]) for x in signed_up_people]
                 
                 #send_mass_mail(mail_list, fail_silently=True)
                 
                 message = "This email has been sent to %d people - I hope you meant it :)" % len(mail_list)
         
+                mail_event = MailEvent.objects.create(from_address = form.cleaned_data['from_address'],
+                    subject = form.cleaned_data['subject'],
+                    body = form.cleaned_data['message'],
+                    date_sent = datetime.datetime.now())
+                mail_event.save()
+                
+                return HttpResponseRedirect("../")
+        
     else:
-        form = EmailForm()
+        form = MailEventForm({'from_address': 'hello@seriouschange.org.uk',
+            'subject': 'Email subject',
+            'message': 'To everyone...'})
         message = None
     
     return render_to_response("email.html", 
