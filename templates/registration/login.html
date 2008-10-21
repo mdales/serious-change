@@ -1,0 +1,21 @@
+{% extends "base_signup.html" %}
+
+{% block content %}
+	
+  <form action='./' method='post' style="margin: 30px;">
+    <table>
+      <tr>
+	<td><label for="username">User name:</label></td>
+	<td><input type="text" name="username" value="" id="username" /></td>
+      </tr>
+      <tr>
+	<td><label for="password">Password:</label></td>
+	<td><input type="password" name="password" value="" id="password" /></td>
+      </tr>
+    </table>
+    <p><input type="submit" value="login" />
+    <input type="hidden" name="next" value="{{ next }}" /></p>
+  </form>
+	
+	
+{% endblock %}
