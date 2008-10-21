@@ -74,8 +74,6 @@ class MailEventForm(forms.Form):
 def email_compose(request):
     """docstring for organise_overview"""
     
-    print request.POST
-    print request.user.email
     message = None
     
     if request.method == "POST":
