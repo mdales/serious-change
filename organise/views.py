@@ -103,7 +103,8 @@ def email_compose(request):
                 mail_event = MailEvent.objects.create(from_address = form.cleaned_data['from_address'],
                     subject = form.cleaned_data['subject'],
                     body = form.cleaned_data['message'],
-                    date_sent = datetime.datetime.now())
+                    date_sent = datetime.datetime.now(),
+                    sender = request.user)
                 mail_event.save()
                 
                 return HttpResponseRedirect("../")

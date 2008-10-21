@@ -1,10 +1,9 @@
 from django.db import models
-
-# Create your models here.
+from django.contrib.auth.models import User
 
 
 class MailEvent(models.Model):
-    
+    sender = models.ForeignKey(User)
     from_address = models.EmailField(default='hello@seriouschange.org.uk')
     subject = models.CharField(max_length=255)
     body = models.TextField()
