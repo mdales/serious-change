@@ -18,7 +18,7 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.contrib.auth.models import User
 from django import forms
-from django.core.mail import send_mail, send_mass_mail, BadHeaderError
+from django.core.mail import SMTPConnection, EmailMessage
 
 from seriouschange.signup.models import SignupDetails
 from seriouschange.organise.models import MailEvent
@@ -63,8 +63,27 @@ def email_list(request):
 
 ##############################################################################
 #
+def _our_send_mass_mail(datatuple, form_address, fail_silently=False, auth_user=None,
+                   auth_password=None):
+    """Our hacked version of the django send_mass_mail function, which relies
+    on django having this patch:
+    http://code.djangoproject.com/attachment/ticket/9214/9214-EmailMessage-r9084.diff
+    """
+    connection = SMTPConnection(username=auth_user, password=auth_password,
+                                fail_silently=fail_silently)
+    headers = {'From': form_address}
+    messages = [EmailMessage(subject, message, sender, recipient, headers=headers)
+                for subject, message, sender, recipient in datatuple]
+    return connection.send_messages(messages)
+#
+##############################################################################
+
+
+##############################################################################
+#   
 class MailEventForm(forms.Form):
-    from_address = forms.EmailField(required=True)
+    # we assime always the hello address
+    #from_address = forms.EmailField(required=True)
     subject = forms.CharField(max_length=255, required=True)
     message = forms.CharField(required=True, widget=forms.Textarea)
     everyone = forms.BooleanField(required=False)
@@ -82,23 +101,26 @@ def email_compose(request):
             
             if (not request.POST.has_key('everyone')) or (request.POST['everyone'] != 'on'):
                 # test mail
-                send_mail(form.cleaned_data['subject'], 
-                    form.cleaned_data['message'], 
-                    form.cleaned_data['from_address'],
-                    [request.user.email,])
+                _our_send_mass_mail([(form.cleaned_data['subject'], 
+                        form.cleaned_data['message'], 'bounce@serioschange.org.uk',
+                        ['hello@seriouschange.org.uk',])], 
+                    'Serious Change <hello@seriouschange.org.uk>')
                 message = "Email has been sent to you - please check it!"
             else:
                 # mail everyont
                 
                 signed_up_people = SignupDetails.objects.all()
                 mail_list = [(form.cleaned_data['subject'], form.cleaned_data['message'], 
-                    form.cleaned_data['from_address'], [x.email_address,]) for x in signed_up_people]
+                    'bounce@seriouschange.org.uk', [x.email_address,]) for x in signed_up_people]
                 
-                send_mass_mail(mail_list, fail_silently=True)
+                _our_send_mass_mail(mail_list, 
+                    'Serious Change <hello@seriouschange.org.uk>', 
+                    fail_silently=True)
                 
                 message = "This email has been sent to %d people - I hope you meant it :)" % len(mail_list)
         
-                mail_event = MailEvent.objects.create(from_address = form.cleaned_data['from_address'],
+                mail_event = MailEvent.objects.create(from_address = 
+                    'Serious Change <hello@seriouschange.org.uk>',
                     subject = form.cleaned_data['subject'],
                     body = form.cleaned_data['message'],
                     date_sent = datetime.datetime.now(),
@@ -108,7 +130,7 @@ def email_compose(request):
                 return HttpResponseRedirect("../")
         
     else:
-        form = MailEventForm({'from_address': 'hello@seriouschange.org.uk',
+        form = MailEventForm({'from_address': 'Serious Change <hello@seriouschange.org.uk>',
             'subject': 'Email subject',
             'message': 'To everyone...'})
         message = None
