@@ -6,5 +6,6 @@ urlpatterns = patterns(
     'seriouschange.organise.views',
     (r'^$',                 'organise_overview'),
     (r'^email/$',           'email_list'),
+    (r'^email/(\d+)/$',     'email_review'),
     (r'^email/compose/$',   'email_compose'),
 )

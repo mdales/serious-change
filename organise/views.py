@@ -23,6 +23,8 @@ from django.core.mail import SMTPConnection, EmailMessage
 from seriouschange.signup.models import SignupDetails
 from seriouschange.organise.models import MailEvent
 
+from seriouschange import settings
+
 ##############################################################################
 #
 @login_required
@@ -101,9 +103,17 @@ def email_compose(request):
             
             if (not request.POST.has_key('everyone')) or (request.POST['everyone'] != 'on'):
                 # test mail
+                message = "This is a TEST MESSAGE from serious change authored by %s\n\n" % request.user.username +\
+                    form.cleaned_data['message'];
+                    
+                if settings.DEBUG:
+                    sender = request.user.email
+                else:
+                    sender = 'hello@seriouschange.org.uk'
+                
                 _our_send_mass_mail([(form.cleaned_data['subject'], 
-                        form.cleaned_data['message'], 'bounce@serioschange.org.uk',
-                        ['hello@seriouschange.org.uk',])], 
+                        message, 'bounce@serioschange.org.uk',
+                        [sender,])], 
                     'Serious Change <hello@seriouschange.org.uk>')
                 message = "Email has been sent to you - please check it!"
             else:
@@ -125,6 +135,9 @@ def email_compose(request):
                     body = form.cleaned_data['message'],
                     date_sent = datetime.datetime.now(),
                     sender = request.user)
+                #mail_event.receivers.add([x for x in signed_up_people])
+                for person in signed_up_people:
+                    mail_event.receivers.add(person)
                 mail_event.save()
                 
                 return HttpResponseRedirect("../")
@@ -137,6 +150,53 @@ def email_compose(request):
     
     return render_to_response("email.html", 
         {'form': form, 'message': message},
+        context_instance=RequestContext(request))
+#
+##############################################################################
+
+
+##############################################################################
+#   
+@login_required
+def email_review(request, email_id):
+    
+    email = get_object_or_404(MailEvent, pk=email_id)
+    message = ''
+    receiver_set = email.receivers.get_query_set().all()
+    people_set = SignupDetails.objects.all()
+    
+    if request.method == "POST":
+        # the user wants to send this message to those that haven't had it already
+        
+        # build our list of new people
+        new_people = []
+        receiver_list = [x for x in receiver_set]
+        for person in people_set:
+            try:
+                receiver_list.index(person)
+            except ValueError:
+                new_people.append(person)
+        
+        # now we have a list of targets, send that email!
+        mail_list = [(email.subject, email.body, 
+            'bounce@seriouschange.org.uk', [x.email_address,]) for x in new_people]
+        
+        _our_send_mass_mail(mail_list, 
+            'Serious Change <hello@seriouschange.org.uk>', 
+            fail_silently=True)
+        
+        message = "This email has been sent to %d people - I hope you meant it :)" % len(new_people)
+
+        for person in new_people:
+            email.receivers.add(person)
+        email.save()
+        
+    count = len(email.receivers.get_query_set().all())
+    new_user_count = len(people_set) - count
+
+    return render_to_response("email_review.html", 
+        {'email': email, 'message': message, 'count': count,
+        'new_user_count': new_user_count},
         context_instance=RequestContext(request))
 #
 ##############################################################################
