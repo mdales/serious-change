@@ -4,6 +4,9 @@
 ###
 ### seriouschange/signup/views.py
 ###
+### Copyright Michael Dales (c) 2008. Made available under
+### the Affero GNU Public License - see COPYING file for details.
+###
 ### Contains the views for the initial basic sign up web site
 ###
 ##############################################################################

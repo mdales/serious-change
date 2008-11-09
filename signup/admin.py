@@ -4,6 +4,9 @@
 ###
 ### seriouschange/signup/admin.py
 ###
+### Copyright Michael Dales (c) 2008. Made available under
+### the Affero GNU Public License - see COPYING file for details.
+###
 ### Used to populate the admin interface for django
 ###
 ##############################################################################

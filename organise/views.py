@@ -4,6 +4,9 @@
 ###
 ### seriouschange/organise/views.py
 ###
+### Copyright Michael Dales (c) 2008. Made available under
+### the Affero GNU Public License - see COPYING file for details.
+###
 ### Contains the views for site admins to organise things
 ###
 ##############################################################################
