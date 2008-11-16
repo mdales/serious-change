@@ -25,6 +25,7 @@ import django.forms as forms
 
 # serious change imports
 from seriouschange.signup.models import SignupDetails
+from seriouschange.signup.country import countries
 
 #from facebook import Facebook
 
@@ -82,17 +83,24 @@ class SignupDetailsForm(Form):
         'invalid': 'Please enter a valid email address.'})
     postcode = forms.CharField(max_length=9, 
         error_messages = {'required': 'Please enter a valid postcode.'})
+    country = forms.ChoiceField(choices=countries)
 
     ##########################################################################
     #
     def clean_postcode(self):
-        """we use this method to check that the postcode is valid"""
-        postcode = self.cleaned_data['postcode']
-                
-        if not _validate_postcode(postcode):
-            raise ValidationError('Please enter a valid postcode.')
         
-        return postcode
+        if self.is_valid():        
+            """we use this method to check that the postcode is valid"""
+            postcode = self.cleaned_data['postcode']
+                
+            if self.data['country'] != 'GB':
+                if len(postcode) > 0:
+                    raise ValidationError("Please don't leave your postcode outside the UK")
+                
+            if not _validate_postcode(postcode):
+                raise ValidationError('Please enter a valid postcode.')
+        
+            return postcode
     #
     ##########################################################################
     
@@ -129,6 +137,7 @@ def signup_page(request):
             new_signup.creation_time = datetime.datetime.now()
             new_signup.creation_ipaddr = request.META['REMOTE_ADDR']
             new_signup.version_string = request.POST['version']
+            new_signup.country = signup_form.data['country']
             new_signup.save()
             
             # return to the main org view after creation
