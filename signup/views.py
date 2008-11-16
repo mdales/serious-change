@@ -81,7 +81,7 @@ class SignupDetailsForm(Form):
     email_address = forms.EmailField(error_messages = 
         {'required': 'Please enter a valid email address.',
         'invalid': 'Please enter a valid email address.'})
-    postcode = forms.CharField(max_length=9, 
+    postcode = forms.CharField(max_length=9, label="UK Postcode", required=False,
         error_messages = {'required': 'Please enter a valid postcode.'})
     country = forms.ChoiceField(choices=countries)
 
@@ -96,7 +96,11 @@ class SignupDetailsForm(Form):
             if self.data['country'] != 'GB':
                 if len(postcode) > 0:
                     raise ValidationError("Please don't leave your postcode outside the UK")
+                return ''
                 
+            if len(postcode) == 0:
+                raise ValidationError('Please enter a valid postcode.')
+            
             if not _validate_postcode(postcode):
                 raise ValidationError('Please enter a valid postcode.')
         
