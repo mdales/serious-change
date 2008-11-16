@@ -1,13 +1,23 @@
 body {
   width:61em;
   margin:0 auto 0 auto;
-  font-family:"Courier New", "Courier", monospace;
   position:relative;
 }
+
+p {
+  font-family:"Courier New", "Courier", monospace;
+}
+
+
+em {
+  font-family:"Courier New", "Courier", monospace;
+}
+
 h1 {
   width:40%;
   font-size:8em;
   font-weight:bold;
+  font-family:"Courier New", "Courier", monospace;
   float:left;
 }
 
@@ -62,9 +72,12 @@ h1 {
 #p5outer {
   margin:1em 0;
 /*  padding:1em 0 0 6em;*/
-  font-size:1.8em;
   background:url('images/form-arrow.png') left 60% no-repeat;  
   position:relative;
+}
+
+#p5outer p {
+  font-size:1.8em;
 }
 
 #p5inner {
@@ -83,16 +96,26 @@ h1 {
 }
 
 #p5outer form ol li label {
+  font-size:1.8em;
+  font-family:"Courier New", "Courier", monospace;
   display:inline-block;
-  width:9em;
+  width:10em;
 }
 
 #p5outer form ol li input {
   border:1px solid black;
 }
 
+#p5outer form ol li select {
+  font-family: ;
+  font-weight: nil;
+  font-size: nil;
+}
+
 #p5outer form input {
   border:1px solid black;
+  font-family:"Courier New", "Courier", monospace;
+  font-size:1.8em;
 }
 
 
