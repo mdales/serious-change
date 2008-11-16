@@ -25,7 +25,7 @@ import django.forms as forms
 
 # serious change imports
 from seriouschange.signup.models import SignupDetails
-from seriouschange.signup.country import countries
+from seriouschange.signup.country import non_uk_countries
 
 #from facebook import Facebook
 
@@ -81,9 +81,10 @@ class SignupDetailsForm(Form):
     email_address = forms.EmailField(error_messages = 
         {'required': 'Please enter a valid email address.',
         'invalid': 'Please enter a valid email address.'})
-    postcode = forms.CharField(max_length=9, label="UK Postcode", required=False,
+    postcode = forms.CharField(max_length=9, label="Postcode", required=False,
         error_messages = {'required': 'Please enter a valid postcode.'})
-    country = forms.ChoiceField(choices=countries)
+    country = forms.ChoiceField(choices=non_uk_countries)
+    non_resident = forms.BooleanField(label="Non UK resident", required=False)
 
     ##########################################################################
     #
@@ -92,12 +93,13 @@ class SignupDetailsForm(Form):
         if self.is_valid():        
             """we use this method to check that the postcode is valid"""
             postcode = self.cleaned_data['postcode']
-                
-            if self.data['country'] != 'GB':
-                if len(postcode) > 0:
-                    raise ValidationError("Please don't leave your postcode outside the UK")
-                return ''
-                
+               
+            try:
+                if self.data['non_resident']:
+                    return postcode
+            except:
+                pass
+                                
             if len(postcode) == 0:
                 raise ValidationError('Please enter a valid postcode.')
             
@@ -141,7 +143,10 @@ def signup_page(request):
             new_signup.creation_time = datetime.datetime.now()
             new_signup.creation_ipaddr = request.META['REMOTE_ADDR']
             new_signup.version_string = request.POST['version']
-            new_signup.country = signup_form.data['country']
+            if signup_form.cleaned_data['non_resident']:
+                new_signup.country = signup_form.data['country']
+            else:
+                new_signup.country = "GB"
             new_signup.save()
             
             # return to the main org view after creation

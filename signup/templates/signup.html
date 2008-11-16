@@ -1,5 +1,34 @@
 {% extends "base_signup.html" %}
 
+{% block script %}
+<script type="text/javascript" src="/site_media/jquery-1.2.6.min.js"></script>
+
+<script>
+	
+function update_form()
+{
+	if ($("input#id_non_resident").attr("checked"))
+	{
+		$("#id_country").parent().show();
+		$("#id_postcode").parent().hide();
+	}
+	else
+	{
+		$("#id_country").parent().hide();
+		$("#id_postcode").parent().show();
+	}
+}
+	
+$(document).ready(function()
+	{
+		$("input#id_non_resident").unbind('change').change(update_form);
+		update_form();
+	}
+);
+</script>
+{% endblock %}
+
+
 {% block content %}
 	
 <h1 id="sigh">Sigh.</h1>
@@ -35,7 +64,7 @@
           </li>
         {% endfor %}
       </ol>
-      <input type="hidden" name="version" value="pretty"/>
+      <input type="hidden" name="version" value="pretty_with_country"/>
       <input type="submit" class="submit" value="Sign up"/>
     </form>
   </div>
