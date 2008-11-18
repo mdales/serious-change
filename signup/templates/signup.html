@@ -21,7 +21,9 @@ function update_form()
 	
 $(document).ready(function()
 	{
-		$("input#id_non_resident").unbind('change').change(update_form);
+		// the temptation here is to use changed rather than click,
+		// but IE doesn't work with that
+		$("input#id_non_resident").unbind('click').click(update_form);
 		update_form();
 	}
 );
