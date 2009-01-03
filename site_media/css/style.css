@@ -19,21 +19,37 @@ h1 {
   font-weight:bold;
   font-family:"Courier New", "Courier", monospace;
   float:left;
+ /* padding:1em 0 0 0;*/
 }
 
+#video embed {
+  margin:1em 0 0 0;
+}
+
+p#video {
+    width: 100%;
+    float: center;
+  clear:both;
+}
 
 #p1 {
   margin:1.6em 0;
   float:right;
-  width:60%;
+  font-size:2em;
+  clear:both;
+}
+
+
+#p11 {
   font-size:2em;
 }
+
 
 #p2 {
   margin:1.5em 0;
   padding:0 18em 0 0;
   font-size:1.2em;
-  background:url('images/p2-arrow.png') 80% bottom no-repeat;
+  background:url('images/p2-arrow.png') 90% center no-repeat;
   clear:both;
 }
 
@@ -166,9 +182,11 @@ span.error {
     color: #f00;
 }
 
-#faq li
+ul.reasonlist li
 {
+  font-family:"Courier New", "Courier", monospace;
     list-style-position: inside;
-    list-style-type: decimal;
+    list-style-type: circle;
     margin-left: 10px;
+  font-size:1.2em;
 }
