@@ -18,5 +18,24 @@
 
 	{% block content %}
 	{% endblock %}
+
+	<hr>
+	
+	<div id="footer">
+		<table width="100%">
+			<tr>
+				<td align="left">
+					{% if user.first_name %}
+						Logged in as {{user.first_name}}
+					{% else %}
+						Logged in as {{user.username}}
+					{% endif %}
+				</td>
+				<td align="right">
+					<a href="/accounts/logout/">Logout</a>
+				</td>
+		</table>
+	</div>
+
 </body>
 </html>

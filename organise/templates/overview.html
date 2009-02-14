@@ -3,16 +3,14 @@
 {% block content %}
 	
 	
-<h1>SeriousChange overview</h1>
+<h2>SeriousChange overview</h2>
 
-{% if user.first_name %}
-	<p>Welcome {{user.first_name}}!</p>
-{% else %}
-	<p>Welcome {{user.username}}!</p>
-{% endif %}
+<p>Welcome to organise.seriouschange.org.uk. From here you can manage our subscribed interest list, and send emails to them.</p>
+
+<hr>
 
 <div class="signups">
-	<h2>Stats</h2>
+	<h3>Stats</h3>
 	<ul>
 		<li>Total signups: {{ total.all }}
 		<li>New since you last logged in: {{ total.recent }}
@@ -20,14 +18,14 @@
 	</ul>
 </div>
 
+<hr>
+
 <div class="tasks">
-	<h2>Tasks</h2>
+	<h3>Tasks</h3>
 
 	<ul>
 		<li><a href="email/">Send email to signed up people</a></li>
 	</ul>
 </div>
-
-<p><a href="/accounts/logout/">Logout</a></p>
 
 {% endblock %}
