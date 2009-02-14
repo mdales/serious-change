@@ -8,4 +8,5 @@ urlpatterns = patterns(
     (r'^email/$',           'email_list'),
     (r'^email/(\d+)/$',     'email_review'),
     (r'^email/compose/$',   'email_compose'),
+    (r'^map/$',             'plot_users'),
 )

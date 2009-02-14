@@ -11,10 +11,10 @@ EMAIL_HOST = 'nothing.reaperman.org'
 
 MANAGERS = ADMINS
 
-DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'seriouschangedb'     # Or path to database file if using sqlite3.
-DATABASE_USER = ''             # Not used with sqlite3.
-DATABASE_PASSWORD = ''         # Not used with sqlite3.
+DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+DATABASE_NAME = 'seriouschange'     # Or path to database file if using sqlite3.
+DATABASE_USER = 'blahblahblah'             # Not used with sqlite3.
+DATABASE_PASSWORD = 'blahblahblah'         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
@@ -68,6 +68,8 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'seriouschange.urls'
+
+GOOGLE_MAPS_API_KEY = "INSERTYOURKEYHERE"
 
 import os
 TEMPLATE_DIRS = (

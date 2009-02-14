@@ -2,9 +2,11 @@
 
 {% block content %}
 	
-<h1>Email campaigns</h1>
+<h2>Email campaigns</h2>
 
-<p>Here you can look at previous email campaigns, or you can create a new one!</p>
+<p>Here you can look at previous email campaigns, or you can create a new one.</p>
+
+<hr>
 
 {% if campaign_list %}
 <table>
@@ -26,11 +28,9 @@
 	{% endfor %}
 </table>
 {% else %}
-<p>SeriousChange has not yet sent any campaigns!</p>
+<p>SeriousChange has not yet sent any campaigns.</p>
 {% endif %}
 
-<p>To carry out a new mail campaign <a href="compose/">click here</a>!</p>
-
-<p>Return to <a href="/organise/">serious change organise overview</a>...</p>
+<p>To carry out a new mail campaign <a href="compose/">click here</a>.</p>
 
 {% endblock %}

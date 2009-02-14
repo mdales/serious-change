@@ -89,9 +89,9 @@ def _our_send_mass_mail(datatuple, form_address, fail_silently=False, auth_user=
 class MailEventForm(forms.Form):
     # we assime always the hello address
     #from_address = forms.EmailField(required=True)
-    subject = forms.CharField(max_length=255, required=True)
+    subject = forms.CharField(max_length=255, required=True, widget=forms.TextInput(attrs={'size':'60'}))
     message = forms.CharField(required=True, widget=forms.Textarea)
-    everyone = forms.BooleanField(required=False)
+    everyone = forms.BooleanField(required=False, label="Preview only")
     
     
 @login_required
@@ -148,7 +148,8 @@ def email_compose(request):
     else:
         form = MailEventForm({'from_address': 'Serious Change <hello@seriouschange.org.uk>',
             'subject': 'Email subject',
-            'message': 'To everyone...'})
+            'message': 'To everyone...',
+            'everyone': True})
         message = None
     
     return render_to_response("email.html", 
@@ -200,6 +201,20 @@ def email_review(request, email_id):
     return render_to_response("email_review.html", 
         {'email': email, 'message': message, 'count': count,
         'new_user_count': new_user_count},
+        context_instance=RequestContext(request))
+#
+##############################################################################
+
+
+##############################################################################
+#   
+def plot_users(request):
+    
+    point_list = SignupDetails.objects.exclude(latitude=None, longitude=None)
+    
+    missing = len(SignupDetails.objects.all()) - len(point_list)
+    
+    return render_to_response("mapping.html", {'points': point_list},
         context_instance=RequestContext(request))
 #
 ##############################################################################

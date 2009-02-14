@@ -149,6 +149,9 @@ def signup_page(request):
                 new_signup.country = "GB"
             new_signup.save()
             
+            new_signup.get_location()
+                
+            
             # return to the main org view after creation
             return render_to_response('welldone.html', 
                 {'email_subject': EMAIL_SUBJECT, 

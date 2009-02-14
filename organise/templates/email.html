@@ -2,13 +2,16 @@
 
 {% block content %}
 	
-<h1>Email people</h1>
+<h2>Email people</h2>
 
-<p>Please be very careful with this - what you're about to send will hit everyone!</p>
-<p>We only log an email when you send it to everyone.</p>
+<p>Please be very careful with this, as this page lets you send email to the entire serious change subscriber base.</p>
+
+<p>By default you'll only send a preview email which goes to yourself - when you're happy with the email turn off preview and it will be sent out to the set of people you selected. We only log an email when you send it out for real.</p>
+
+<hr>
 
 {% if message %}
-	<h2>{{message}}</h2>
+	<h3>{{message}}</h3>
 {% endif %}
 
 <form method="POST">
@@ -19,7 +22,5 @@
 </table>
 <input type="submit" value="Send mail"/> (this may take a while...)
 </form>
-
-<p>Return to <a href="/organise/">serious change organise overview</a>...</p>
 
 {% endblock %}
