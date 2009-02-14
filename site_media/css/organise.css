@@ -1,0 +1,38 @@
+@import url('typography.css');
+
+#sitename {
+  background:#000000 url('/site_media/images/head-r.png') right no-repeat;
+  text-align:center;
+}
+
+#sitename a {
+  color:#FFFFFF;
+  display:block; 
+  height:137px;
+  background:url('/site_media/images/head-l.png') left no-repeat;
+  font-family:"Courier New","Courier",monospace;
+  line-height:130px;
+  text-decoration:none;
+}
+
+#sitename a:hover {
+  text-decoration:underline;
+}
+
+
+
+h1 {
+    font-size:3em;
+    line-height:1;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color:#111111;
+    font-weight:normal;
+}
+
+body {  
+    margin:0 auto;
+    padding:0;
+    width: 80%;
+}
