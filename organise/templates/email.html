@@ -15,7 +15,7 @@
 {% endif %}
 
 <form method="POST">
-<table>
+<table width="100%">
 	{% for field in form %}
 		<tr><td>{{field.label}}</td><td>{{field}} {{field.errors}}</td></tr>
 	{% endfor %}

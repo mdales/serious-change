@@ -23,7 +23,7 @@ from django.contrib.auth.models import User
 from django import forms
 from django.core.mail import SMTPConnection, EmailMessage
 
-from seriouschange.signup.models import SignupDetails
+from seriouschange.signup.models import SignupDetails, GeoData
 from seriouschange.organise.models import MailEvent
 
 from seriouschange import settings
@@ -67,6 +67,35 @@ def email_list(request):
 
 
 ##############################################################################
+#   
+def _genete_list_of_groups():
+    """Given the database of subscribers, work out a list of targetable zones"""
+
+    targets = [('*', 'Everyone'), ('', '')]
+    
+    geo_list = GeoData.objects.all()
+    
+    admin_list = set()
+    country_list = set()
+    
+    for g in geo_list:
+        if g.admin_area:            
+            admin_list.add(g.admin_area)
+        if g.country:
+            country_list.add(g.country)
+
+    for a in admin_list:
+        targets.append(('a:%s' % a, a))
+    targets.append(('', ''))
+    for c in country_list:
+        targets.append(('c:%s' % c, c))
+        
+    return targets
+#
+##############################################################################
+
+
+##############################################################################
 #
 def _our_send_mass_mail(datatuple, form_address, fail_silently=False, auth_user=None,
                    auth_password=None):
@@ -91,7 +120,8 @@ class MailEventForm(forms.Form):
     #from_address = forms.EmailField(required=True)
     subject = forms.CharField(max_length=255, required=True, widget=forms.TextInput(attrs={'size':'60'}))
     message = forms.CharField(required=True, widget=forms.Textarea)
-    everyone = forms.BooleanField(required=False, label="Preview only")
+    target = forms.ChoiceField(required=True)
+    preview = forms.BooleanField(required=False, label="Preview only")
     
     
 @login_required
@@ -102,9 +132,10 @@ def email_compose(request):
     
     if request.method == "POST":
         form = MailEventForm(request.POST)
+        form.fields['target'].choices = _genete_list_of_groups()
         if form.is_valid():
             
-            if (not request.POST.has_key('everyone')) or (request.POST['everyone'] != 'on'):
+            if (request.POST.has_key('preview')) and (request.POST['preview'] == 'on'):
                 # test mail
                 message = "This is a TEST MESSAGE from serious change authored by %s\n\n" % request.user.username +\
                     form.cleaned_data['message'];
@@ -122,7 +153,19 @@ def email_compose(request):
             else:
                 # mail everyont
                 
-                signed_up_people = SignupDetails.objects.all()
+                # filter people based on what we asked for
+                region = form.cleaned_data['target']
+                if region == '*':
+                    signed_up_people = SignupDetails.objects.all()
+                else:
+                    # was it an admin area or country?
+                    if region.startswith('a:'):
+                        signed_up_people = SignupDetails.objects.filter(location__admin_area=region[2:])
+                    elif region.startswith('c:'):
+                        signed_up_people = SignupDetails.objects.filter(location__country=region[2:])
+                    else:
+                        pass #XXX erm
+                
                 mail_list = [(form.cleaned_data['subject'], form.cleaned_data['message'], 
                     'bounce@seriouschange.org.uk', [x.email_address,]) for x in signed_up_people]
                 
@@ -137,8 +180,9 @@ def email_compose(request):
                     subject = form.cleaned_data['subject'],
                     body = form.cleaned_data['message'],
                     date_sent = datetime.datetime.now(),
+                    region = region,
                     sender = request.user)
-                #mail_event.receivers.add([x for x in signed_up_people])
+
                 for person in signed_up_people:
                     mail_event.receivers.add(person)
                 mail_event.save()
@@ -149,7 +193,8 @@ def email_compose(request):
         form = MailEventForm({'from_address': 'Serious Change <hello@seriouschange.org.uk>',
             'subject': 'Email subject',
             'message': 'To everyone...',
-            'everyone': True})
+            'preview': True})
+        form.fields['target'].choices = _genete_list_of_groups()
         message = None
     
     return render_to_response("email.html", 
@@ -167,7 +212,22 @@ def email_review(request, email_id):
     email = get_object_or_404(MailEvent, pk=email_id)
     message = ''
     receiver_set = email.receivers.get_query_set().all()
-    people_set = SignupDetails.objects.all()
+    
+    # filter based on region
+    region = email.region
+    if region == '*':
+        people_set = SignupDetails.objects.all()
+        pretty_print_region = "everyone"
+    else:
+        # was it an admin area or country?
+        if region.startswith('a:'):
+            people_set = SignupDetails.objects.filter(location__admin_area=region[2:])
+            pretty_print_region = region[2:]
+        elif region.startswith('c:'):
+            people_set = SignupDetails.objects.filter(location__country=region[2:])
+            pretty_print_region = region[2:]
+        else:
+            raise Http404 #XXX erm
     
     if request.method == "POST":
         # the user wants to send this message to those that haven't had it already
@@ -200,7 +260,8 @@ def email_review(request, email_id):
 
     return render_to_response("email_review.html", 
         {'email': email, 'message': message, 'count': count,
-        'new_user_count': new_user_count},
+        'new_user_count': new_user_count,
+        'region': pretty_print_region},
         context_instance=RequestContext(request))
 #
 ##############################################################################
@@ -208,11 +269,12 @@ def email_review(request, email_id):
 
 ##############################################################################
 #   
+@login_required
 def plot_users(request):
     
-    point_list = SignupDetails.objects.exclude(latitude=None, longitude=None)
+    point_list = GeoData.objects.exclude(latitude=None, longitude=None)
     
-    missing = len(SignupDetails.objects.all()) - len(point_list)
+    missing = len(SignupDetails.objects.exclude(location=None).exclude(location__longitude=None))
     
     return render_to_response("mapping.html", {'points': point_list},
         context_instance=RequestContext(request))

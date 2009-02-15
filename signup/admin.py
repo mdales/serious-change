@@ -14,6 +14,7 @@
 ##############################################################################
 
 from django.contrib import admin
-from seriouschange.signup.models import SignupDetails
+from seriouschange.signup.models import SignupDetails, GeoData
 
 admin.site.register(SignupDetails)
+admin.site.register(GeoData)

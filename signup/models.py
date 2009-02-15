@@ -22,6 +22,61 @@ GOOGLE_GEOCODE_URL = "http://maps.google.com/maps/geo?key=%s&q=" % settings.GOOG
 
 ##############################################################################
 #
+class GeoData(models.Model):
+    
+    request_address = models.CharField(max_length=255, blank=False, null=False)
+    result_address = models.CharField(max_length=255, blank=True, null=True)
+    lookup_status = models.IntegerField(blank=True, null=True)
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
+    country = models.CharField(max_length=255, blank=True, null=True)
+    admin_area = models.CharField(max_length=255, blank=True, null=True)
+    
+    
+    def __unicode__(self):
+        return u"%s - %s, %s" % (self.request_address, self.latitude, self.longitude)
+    
+    def get_location_data(self, raw_address):
+        address = urllib.quote(raw_address)
+        
+        try:
+            f = urllib.urlopen(GOOGLE_GEOCODE_URL + address)            
+            data = simplejson.load(f)
+            f.close()
+        except IOError:
+            # fail, so just give up
+            return
+        
+        self.request_address = raw_address.lower()
+        self.lookup_status = int(data['Status']['code'])
+        
+        
+        if self.lookup_status == 200:
+                    
+            placemark = data.get('Placemark', [])
+            if len(placemark) == 0:
+                return
+        
+            # just go by first placemark
+            place = placemark[0]
+        
+            self.result_address = place['address']
+            self.longitude = float(place['Point']['coordinates'][0])
+            self.latitude = float(place['Point']['coordinates'][1])
+            
+            address = place['AddressDetails']
+            self.country = address['Country']['CountryName']
+            
+            if address['Country'].has_key('AdministrativeArea'):
+                self.admin_area = address['Country']['AdministrativeArea']['AdministrativeAreaName']
+            
+        self.save()    
+#
+##############################################################################
+
+
+##############################################################################
+#
 class SignupDetails(models.Model):
     email_address = models.EmailField(blank=False, null=False)
     postcode = models.CharField(max_length=8, blank=True)
@@ -31,8 +86,7 @@ class SignupDetails(models.Model):
     country = models.CharField(max_length=128, blank=False, null=False, 
         default='GB')
     
-    latitude = models.FloatField(blank=True, null=True)
-    longitude = models.FloatField(blank=True, null=True)
+    location = models.ForeignKey(GeoData, blank=True, null=True)
     
     class Admin:
         pass
@@ -51,28 +105,13 @@ class SignupDetails(models.Model):
                     address = x[1]
             if not address:
                 address = self.country
-        address = urllib.quote(address)
         
-        print "looking for ", address
+        location, created = GeoData.objects.get_or_create(request_address=address.lower())
         
-        try:
-            f = urllib.urlopen(GOOGLE_GEOCODE_URL + address)            
-            data = simplejson.load(f)
-            f.close()
-        except IOError:
-            # fail, so just give up
-            return
+        self.location = location
+        if created:
+            self.location.get_location_data(address)
+        self.save()
         
-        if data['Status']['code'] != 200:
-            return
-        
-        placemark = data.get('Placemark', [])
-        if len(placemark) == 0:
-            return
-            
-        self.longitude = float(placemark[0]['Point']['coordinates'][0])
-        self.latitude = float(placemark[0]['Point']['coordinates'][1])
-        
-        self.save()    
 #
 ##############################################################################

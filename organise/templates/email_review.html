@@ -2,17 +2,20 @@
 
 {% block content %}
 	
-<h1>Message {{email.subject}}</h1>
+<h2>Message {{email.subject}}</h2>
 
 <p>On {{email.date_sent.date}} at {{email.date_send.time}} {{email.sender.username}} sent this message:</p>
 
+<hr>
 
 <div class="box">
 	<p>Subject: {{email.subject}}</p>
 	<p>{{email.body}}
 </div>
 
-<p>This message went to {{count}} people, and since then there have been {{new_user_count}} new people sign up.</p>
+<hr>
+
+<p>This message went to {{count}} people in group "{{region}}", and since then there have been {{new_user_count}} new people sign up.</p>
 
 {% if new_user_count %}
 <form method="POST">
@@ -20,8 +23,5 @@
 </form>
 {% endif %}
 
-
-<hr>
-<p>Return to <a href="/organise/">serious change organise overview</a>...</p>
 
 {% endblock %}
